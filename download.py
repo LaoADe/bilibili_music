@@ -1,11 +1,9 @@
 import os
 import re
-import numpy as np
 import requests
-from mutagen.id3 import ID3, APIC, TIT2, TPE1, TALB
+from mutagen.id3 import ID3, APIC, TIT2, TPE1
 from pydub import AudioSegment
-from PIL import Image
-from io import BytesIO,StringIO
+from io import BytesIO
 
 headers = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) '
@@ -56,13 +54,13 @@ def download(vlist):
 
         html = requests.get(url, headers=headers).text
         if os.path.exists(author):
-            info_mp3(author, headers2, html, i, title,img)
+            info_mp3(author, headers2, html, i, title, img)
         else:
             os.makedirs(author)
-            info_mp3(author, headers2, html, i, title,img)
+            info_mp3(author, headers2, html, i, title, img)
 
 
-def info_mp3(author, headers2, html, i, title,img):
+def info_mp3(author, headers2, html, i, title, img):
     video_name = author + "/" + (
             title.replace('/', '／').replace('\\', '＼').replace('|', '_').replace('?', '？') + '.mp3').lstrip()
     print(video_name)
@@ -73,7 +71,7 @@ def info_mp3(author, headers2, html, i, title,img):
     response = requests.get(audio_url, headers=headers2, stream=True, verify=False)
     song = AudioSegment.from_file(BytesIO(response.content))
     song.export(video_name, format="mp3")
-    info = {'title': title, 'artist': author,"img":img}
+    info = {'title': title, 'artist': author, "img": img}
     SetMp3Info(video_name, info)
     i += 1
 
